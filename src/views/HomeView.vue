@@ -1,152 +1,54 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { useTheme } from 'vuetify'
+import LinkButton from '@/components/LinkButton.vue'
 
-const isDark = ref(false)
+const theme = useTheme()
 
 function toggleTheme() {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark', isDark.value)
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
 }
 
-onMounted(() => {
-  isDark.value = document.documentElement.classList.contains('dark')
-})
-
 const links = [
-  { label: 'Portfolio', url: 'https://example.com/portfolio', icon: '🎨' },
-  { label: 'LinkedIn', url: 'https://linkedin.com', icon: '💼' },
-  { label: 'Email', url: 'mailto:nadia@example.com', icon: '✉️' },
+  { label: 'Portfolio', url: 'https://example.com/portfolio', icon: 'mdi-palette' },
+  { label: 'LinkedIn', url: 'https://linkedin.com', icon: 'mdi-linkedin' },
+  { label: 'Email', url: 'mailto:nadia@example.com', icon: 'mdi-email' },
 ]
 </script>
 
 <template>
-  <div class="card">
-    <button class="theme-toggle" @click="toggleTheme" :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-      {{ isDark ? '☀️' : '🌙' }}
-    </button>
+  <v-container class="fill-height" fluid>
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="8" md="5" lg="4">
+        <v-card class="pa-8 text-center" rounded="xl" elevation="4">
+          <v-btn
+            icon
+            variant="text"
+            size="small"
+            style="position: absolute; top: 12px; right: 12px;"
+            :aria-label="theme.global.current.value.dark ? 'Switch to light mode' : 'Switch to dark mode'"
+            @click="toggleTheme"
+          >
+            <v-icon>{{ theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+          </v-btn>
 
-    <div class="avatar">
-      <span class="avatar-placeholder">NM</span>
-    </div>
+          <v-avatar size="100" class="mb-4" color="purple-accent-2">
+            <span class="text-h4 font-weight-bold text-white">NM</span>
+          </v-avatar>
 
-    <h1 class="name">Nadia Magenta</h1>
-    <p class="tagline">Developer · Designer · Creator</p>
+          <h1 class="text-h5 font-weight-bold mb-1">Nadia Magenta</h1>
+          <p class="text-body-2 text-medium-emphasis mb-6">Developer · Designer · Creator</p>
 
-    <div class="links">
-      <a
-        v-for="link in links"
-        :key="link.label"
-        :href="link.url"
-        class="link-btn"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span class="link-icon">{{ link.icon }}</span>
-        {{ link.label }}
-      </a>
-    </div>
-  </div>
+          <div class="d-flex flex-column ga-3">
+            <LinkButton
+              v-for="link in links"
+              :key="link.label"
+              :label="link.label"
+              :url="link.url"
+              :icon="link.icon"
+            />
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-
-<style scoped>
-.card {
-  width: 100%;
-  max-width: 480px;
-  background: var(--bg-card);
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
-  box-shadow: 0 4px 24px var(--shadow);
-  text-align: center;
-  position: relative;
-  transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.theme-toggle {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  background: var(--toggle-bg);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.theme-toggle:hover {
-  transform: scale(1.1);
-}
-
-.avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin: 0 auto 1.25rem;
-  background: linear-gradient(135deg, #e040fb, #536dfe);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.avatar-placeholder {
-  color: #fff;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  color: var(--text);
-}
-
-.tagline {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
-}
-
-.links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.link-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  background: var(--btn-bg);
-  color: var(--btn-text);
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
-  transition: background-color 0.25s, transform 0.2s, box-shadow 0.25s;
-}
-
-.link-btn:hover {
-  background: var(--btn-hover-bg);
-  color: var(--btn-hover-text);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(224, 64, 251, 0.3);
-}
-
-.link-btn:active {
-  transform: translateY(0);
-}
-
-.link-icon {
-  font-size: 1.1rem;
-}
-</style>
